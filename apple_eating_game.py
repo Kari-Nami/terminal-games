@@ -15,9 +15,10 @@ def main(stdscr):
     super_apple = '$'
 
     ready = ''
-    starting_menu()
+    # starting_menu()
 
     if ready == 'n':
+        sleep(0.5)
         return
 
     curses.curs_set(0)
@@ -81,6 +82,10 @@ def main(stdscr):
             super_apple_chance = 0
             super_apple_x = super_apple_y = 0
 
+        sleep(0.016)
+
+    timeout_popup()
+
     window.nodelay(False)
     curses.echo()
     curses.curs_set(1)
@@ -101,6 +106,7 @@ def main(stdscr):
 
 def starting_menu():
     curses.echo()
+    global ready
 
     while ready != 'n' and ready != 'y':
         window.clear()
@@ -161,6 +167,16 @@ def generate_apple():
     y = randint(start_y + 1, board_height + start_y)
 
     return x, y
+
+def timeout_popup():
+    popup_width, popup_height = 20, 5
+
+    popup = curses.newwin(popup_height, popup_width, 2, start_x-1)
+    popup.box()
+    timeout_text = 'Time out!!'
+    popup.addstr(popup_height//2, (popup_width-len(timeout_text))//2, timeout_text)
+    popup.refresh()
+    sleep(3)
 
 def sort_leaderboard():
     file = open('scoreboard.txt')
