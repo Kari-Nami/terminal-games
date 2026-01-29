@@ -10,7 +10,7 @@ def main(stdscr):
 
     window = stdscr
 
-    character = '#'
+    character = 'x'
     apple = '@'
     super_apple = '$'
 
