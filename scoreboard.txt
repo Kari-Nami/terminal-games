@@ -1,6 +1,7 @@
 winna: 66
+boo: 59
 6969: 34
+crawwwwwww: 14
 bob: 13
 kate: 11
 haha: 2
-test: 0

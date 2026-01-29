@@ -6,24 +6,48 @@ def main(stdscr):
     global window, start_x, start_y, board_height, board_width, character_x, character_y, score
 
     window = stdscr
+
+    character = 'x'
+    apple = '@'
+    super_apple = '$'
+
+    curses.echo()
+
+    ready = ''
+    while ready != 'n' and ready != 'y':
+        window.clear()
+        window.addstr(0,0, 'Welcome to Apple Eating Game')
+        window.addstr(2,0, f'{character} = player character. controlled using wasd or ↑←↓→.')
+        window.addstr(3,0, f'{apple} = basic apple. gives 1 point.')
+        window.addstr(4,0, f'{super_apple} = Super apple. Has a chance to appear when an apple is eaten. Gives 10 points')
+        window.addstr(5,0, 'Press q to quit any time')
+
+        ready_prompt = 'Ready to start? (y/n): '
+        window.addstr(6,0, ready_prompt)
+        window.refresh()
+
+        ready_byte = window.getstr(6, len(ready_prompt), 1)
+        ready = ready_byte.decode('utf-8')
+
+    if ready == 'n':
+        return
+
     curses.curs_set(0)
     window.keypad(True)
+    curses.noecho()
 
     start_x, start_y = 2, 2
     board_width, board_height = 16, 8
 
     character_x = start_x + board_width//2
     character_y = start_y + board_height//2
-    character = 'x'
     score = 0
 
     apple_x, apple_y = generate_apple()
-    apple = '@'
 
     super_apple_probability = 2
     super_apple_x, super_apple_y = 0, 0
     super_apple_chance = 0
-    super_apple = '$'
 
     while True:
         window.clear()
@@ -37,7 +61,7 @@ def main(stdscr):
         window.addstr(character_y, character_x, character)
         window.refresh()
 
-        window.addstr(0, 0, f"({character_x}, {character_y}) Score: {score}")
+        window.addstr(0, 0, f"Your Score: {score}")
 
         global pressed_key
         pressed_key = window.getch()
