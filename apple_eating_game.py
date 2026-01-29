@@ -21,11 +21,17 @@ def main(window):
 
     character = 'x'
     apple = '@'
+    super_apple = '$'
     score = 0
 
     apple_x, apple_y = generate_apple()
 
+    super_apple_chance = 2
+    super_apple_x, super_apple_y = 0, 0
+    chance = 0
+
     while True:
+        is_super_apple = chance == 1
         window.clear()
 
         # print board
@@ -36,6 +42,10 @@ def main(window):
             window.addstr(start_y+row, start_x+board_width+1, f"|")
 
         window.addch(apple_y, apple_x, apple)
+
+        if is_super_apple:
+            window.addstr(super_apple_y, super_apple_x, super_apple)
+
         window.addstr(character_y, character_x, character)
         window.refresh()
 
@@ -58,7 +68,17 @@ def main(window):
 
         if character_x == apple_x and character_y == apple_y:
             apple_x, apple_y = generate_apple()
+            chance = randint(1, super_apple_chance)
+            if chance == 1:
+                super_apple_x, super_apple_y = generate_apple()
+
             score += 1
+
+        if character_x == super_apple_x and character_y == super_apple_y:
+            apple_x, apple_y = generate_apple()
+            score += 10
+            chance = 0
+            super_apple_x = super_apple_y = 0
 
 
 curses.wrapper(main)
