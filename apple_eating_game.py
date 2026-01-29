@@ -56,5 +56,9 @@ def main(window):
         elif pressed_key == ord('s') and character_x < start_x+board_width:
             character_x += 1
 
+        if character_x == apple_x and character_y == apple_y:
+            apple_x, apple_y = generate_apple()
+            score += 1
+
 
 curses.wrapper(main)
