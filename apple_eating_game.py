@@ -64,10 +64,11 @@ def main(stdscr):
         global pressed_key
         pressed_key = window.getch()
         if pressed_key == ord('q'):
+            window.clear()
             window.addstr(0, 0, 'thank you for playing the game')
             window.refresh()
-            sleep(0.5)
-            break
+            sleep(1)
+            return
         move()
 
         if character_x == apple_x and character_y == apple_y:
@@ -84,7 +85,7 @@ def main(stdscr):
 
         sleep(0.016)
 
-    timeout_popup()
+    if timer <= 0: timeout_popup()
 
     window.nodelay(False)
     curses.echo()
