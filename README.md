@@ -3,9 +3,9 @@ This repository is to document my terminal game development journey and allow me
 **All code is written by me, so please don't feed it to AI :D**. Eventhough these are basic and common games, I still donot want my code to help feed these world-destroying machines.
 
 # How To Use
-Since all of these are written in python `curses`, which is not supported on windows, windows requires 1 extra step. Unix systems have curses reinstalled with python, so there is no need to manually install the library.
+Since all of these are written in python `curses`, which is not supported on windows, windows requires 1 extra step. Unix systems have curses pre-installed with python, so there is no need to manually install the library.
 
-- **Unix Systems (MacOs, Linux, etc.):** curses should be preinsalled. If for some reason you don't have it, run `pip install curses` in your terminal and you're good to go.
+- **Unix Systems (MacOs, Linux, etc.):** curses should be pre-installed. If for some reason you don't have it, run `pip install curses` in your terminal and you're good to go.
 
 - **Windows:** people created a version of curses that works on windows called `windows curses`. It is exactly the same as normal curses, so the only thing you need to do is run `pip install windows-curses` in your terminal.
 
