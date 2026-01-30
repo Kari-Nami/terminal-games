@@ -15,7 +15,7 @@ def main(stdscr):
     super_apple = '$'
 
     ready = ''
-    # starting_menu()
+    starting_menu()
 
     if ready == 'n':
         sleep(0.5)
