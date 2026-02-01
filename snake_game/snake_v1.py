@@ -52,6 +52,14 @@ def main(window):
         elif key == ord('a') and player_x>1:
             current_rotation = 3
 
+        if current_rotation != -1 and 1<player_x<board_w*2-3 and  1<player_y<board_h-2:
+            if current_rotation == 0: player_y -= 1
+            elif current_rotation == 1: player_x += 2
+            elif current_rotation == 2: player_y += 1
+            elif current_rotation == 3: player_x -= 2
+
+            sleep(0.5)
+
         sleep(0.016)
 
 
