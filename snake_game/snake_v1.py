@@ -19,7 +19,6 @@ def main(window):
     #               up     right    down    left
     directions = [(0, -1), (2, 0), (0, 1), (-2, 0)]
     current_rotation = -1
-    next_x, next_y = None, None
 
     window.refresh()
 
@@ -34,12 +33,11 @@ def main(window):
         window.addstr(0, 0, f'rotation: {current_rotation} ')
 
         board.addstr(player_y, player_x, player, curses.color_pair(1))
+
         window.refresh()
         board.refresh()
 
         key = board.getch()
-
-        board.addstr(player_y, player_x, '  ')
 
         if key == ord('q'):
             return
@@ -63,16 +61,22 @@ def main(window):
         elif key == ord('a') and player_x>1: current_rotation = 3
 
         if current_rotation != -1:
-            next_x, next_y = player_x + directions[current_rotation][0], player_y + directions[current_rotation][1]
+            board.addstr(player_y, player_x, '  ')
+            player_x, player_y = player_x + directions[current_rotation][0], player_y + directions[current_rotation][1]
 
-            if 0 < next_x < board_w*2-2  and 0 < next_y < board_h - 1:
-                player_x, player_y = next_x, next_y
+            window.addstr(1, 0, f'{(player_x, player_y)}  ')
 
-            # sleep(0.5)
+            board.addstr(board_h-1, 0, f'comparing 0>={player_y} or>={board_h-1}: {0>=player_y or player_y>=board_h-1} ')
+            # board.refresh()
 
-        window.addstr(1, 0, f'current: {(player_x, player_y)}, next: {(next_x, next_y)}      ')
+            if 0>=player_y or player_y>=board_h-1:
+                board.addstr(0, 0, 'death')
+                board.refresh()
+                sleep(1.5)
+                return
 
-        sleep(0.25)
+
+        sleep(0.5)
 
 
 curses.wrapper(main)
