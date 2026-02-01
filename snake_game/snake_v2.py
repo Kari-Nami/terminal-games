@@ -4,11 +4,10 @@ def main(window):
 
     curses.start_color()
     curses.use_default_colors()
+    window = window
 
     curses.init_pair(1, curses.COLOR_MAGENTA, -1)
     curses.init_pair(2, 237, -1)
-
-    window = window
 
     board_h, board_w = 16, 16
     player = '██'
@@ -20,8 +19,7 @@ def main(window):
     #               up     right    down    left
     directions = [(0, -1), (2, 0), (0, 1), (-2, 0)]
     current_rotation = -1
-
-    window.refresh()
+    flag = False
 
     board = curses.newwin(board_h, board_w*2, 2, 0)
     curses.curs_set(0)
@@ -29,10 +27,10 @@ def main(window):
     board.keypad(True)
     board.box()
 
-
     background_dots()
     board.addstr(player_y, player_x, player, curses.color_pair(1))
 
+    window.refresh()
     board.refresh()
     while True:
         key = board.getch()
@@ -68,7 +66,7 @@ def main(window):
 
 def background_dots():
     for i in range(1, board_h-1):
-        for j in range(1, board_w * 2 - 1):
-            if j % 2 == 0: board.addstr(i, j, "·", curses.color_pair(2))
+        for j in range(board_w * 2 - 1):
+            if j % 2 != 0: board.addstr(i, j, "·", curses.color_pair(2))
 
 curses.wrapper(main)
