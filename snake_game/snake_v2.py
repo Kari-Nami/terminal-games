@@ -37,10 +37,10 @@ def main(window):
         key = board.getch()
 
         if key == ord('q'): return
-        elif key == ord('w') and player_y>1: current_rotation = 0
-        elif key == ord('s') and player_x<board_w*2-3: current_rotation = 1
-        elif key == ord('r') and player_y<board_h-2: current_rotation = 2
-        elif key == ord('a') and player_x>1: current_rotation = 3
+        elif key == ord('w'): current_rotation = 0
+        elif key == ord('s'): current_rotation = 1
+        elif key == ord('r'): current_rotation = 2
+        elif key == ord('a'): current_rotation = 3
         elif key == ord('p'): reset()
 
         if current_rotation != -1:
