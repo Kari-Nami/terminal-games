@@ -72,6 +72,13 @@ def main(window):
             snake_length += 1
             tail.insert(1, tail[0])
 
+        if (player_x, player_y) in tail:
+            board.addstr(0, 0, 'death')
+            board.refresh()
+
+            sleep(0.5)
+            reset()
+
         board.addstr(tail[0][1], tail[0][0], '  ')  # clear tail end
         background_dots()  # redraw background
         # print entire tail
