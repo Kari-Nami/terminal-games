@@ -11,12 +11,12 @@ def main(stdscr):
     curses.use_default_colors()
     window = stdscr
 
-    curses.init_pair(1, curses.COLOR_MAGENTA, -1)
+    curses.init_pair(1, curses.COLOR_MAGENTA, -1)  # magenta for head
     curses.init_pair(2, 237, -1)  # dark grey for grid
-    curses.init_pair(3, curses.COLOR_YELLOW, -1)
-    curses.init_pair(4, curses.COLOR_GREEN, -1)
+    curses.init_pair(3, curses.COLOR_YELLOW, -1)  # yellow for tail
+    curses.init_pair(4, curses.COLOR_GREEN, -1)  # green for apple
 
-    board_h, board_w = 16, 16
+    board_h, board_w = 6, 6
     player = '██'
     player_x, player_y = board_w-1, board_h//2
 
@@ -69,10 +69,17 @@ def main(stdscr):
             sleep(0.5)
             reset()
 
+        # ate an apple
         if abs(player_x-apple_x) <= 1 and player_y == apple_y:
             snake_length += 1
             tail.insert(1, tail[0])
+
+            valid_locations.remove((player_x, player_y))
             apple_x, apple_y = generate_apple()
+
+        else:  # only moved, didn't eat apple
+            if (player_x, player_y) in valid_locations: valid_locations.remove((player_x, player_y))
+            if tail: valid_locations.append(tail[0])
 
         if (player_x, player_y) in tail:
             board.addstr(0, 0, 'death')
@@ -108,7 +115,7 @@ def reset():
     current_rotation = -1
     snake_length = 1
 
-    tail = [(player_x, player_y + (snake_length - i)) for i in range(1, snake_length)]
+    tail = [(player_x, player_y+(snake_length-i)) for i in range(snake_length)]
     for i in range(0, snake_length - 1):
         board.addstr(tail[i][1], tail[i][0], body, curses.color_pair(3))
 
@@ -117,16 +124,6 @@ def reset():
     background_dots()
 
 def generate_apple():
-    global valid_locations
-
-    valid_locations.remove((player_x, player_y))
-    if tail:
-        valid_locations.append(tail[0])
-        for location in tail[1:]:
-            if location in valid_locations: valid_locations.remove(location)
-
-    # window.addstr(1, 0, f'valid: {valid_locations}')
-
     return choice(valid_locations)
 
 curses.wrapper(main)
