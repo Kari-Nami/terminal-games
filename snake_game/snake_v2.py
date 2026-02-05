@@ -2,7 +2,7 @@ import curses
 from time import sleep
 
 def main(window):
-    global board_h, board_w, board
+    global board_h, board_w, board, player_x, player_y, snake_length, current_rotation
 
     curses.start_color()
     curses.use_default_colors()
@@ -21,7 +21,6 @@ def main(window):
     #               up     right    down    left
     directions = [(0, -1), (2, 0), (0, 1), (-2, 0)]
     current_rotation = -1
-    flag = False
 
     board = curses.newwin(board_h, board_w*2, 2, 0)
     curses.curs_set(0)
@@ -42,28 +41,17 @@ def main(window):
         elif key == ord('s') and player_x<board_w*2-3: current_rotation = 1
         elif key == ord('r') and player_y<board_h-2: current_rotation = 2
         elif key == ord('a') and player_x>1: current_rotation = 3
-        elif key == ord('p'):  # reset
-            player_x, player_y = board_w-1, board_h//2
-            current_rotation = -1
-            snake_length = 1
-
-            board.clear()
-            board.box()
-            background_dots()
+        elif key == ord('p'): reset()
 
         if current_rotation != -1:
             player_x, player_y = player_x + directions[current_rotation][0], player_y + directions[current_rotation][1]
-
-        # board.refresh()
-        # curses.napms(1500)
-        # return
 
         if (player_x < 1 or player_x >= board_w*2-2) or (player_y < 1 or player_y >= board_h-1):
             board.addstr(0, 0, 'death')
             board.refresh()
 
-            sleep(2)
-            return
+            sleep(0.5)
+            reset()
 
         board.addstr(player_y, player_x, player, curses.color_pair(1))
         window.addstr(0, 0, f'{(player_x, player_y)},  rotation: {current_rotation}, flag: ')
@@ -77,5 +65,16 @@ def background_dots():
     for i in range(1, board_h-1):
         for j in range(board_w * 2 - 1):
             if j % 2 != 0: board.addstr(i, j, "·", curses.color_pair(2))
+
+def reset():
+    global player_x, player_y, current_rotation, snake_length
+
+    player_x, player_y = board_w - 1, board_h // 2
+    current_rotation = -1
+    snake_length = 1
+
+    board.clear()
+    board.box()
+    background_dots()
 
 curses.wrapper(main)
