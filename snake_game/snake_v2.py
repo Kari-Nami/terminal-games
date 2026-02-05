@@ -3,7 +3,7 @@ from time import sleep
 
 def main(window):
     global board_h, board_w, board, player_x, player_y, \
-        snake_length, current_rotation
+        snake_length, current_rotation, tail, body
 
     curses.start_color()
     curses.use_default_colors()
@@ -18,14 +18,14 @@ def main(window):
     player_x, player_y = board_w-1, board_h//2
 
     body = '██'
-    snake_length = 3
-    tail = [(player_x, player_y+(snake_length-i)) for i in range(1, snake_length)]
+    snake_length = 5
+    tail = [(player_x, player_y+(snake_length-i)) for i in range(snake_length)]
 
     #               up     right    down    left
     directions = [(0, -1), (2, 0), (0, 1), (-2, 0)]
     current_rotation = -1
 
-    board = curses.newwin(board_h, board_w*2, 2, 0)
+    board = curses.newwin(board_h, board_w*2, 4, 0)
     curses.curs_set(0)
     board.nodelay(True)
     board.keypad(True)
@@ -47,9 +47,8 @@ def main(window):
         elif key == ord('p'): reset()
 
         if current_rotation != -1:
-            board.addstr(tail[0][1], tail[0][0], '  ')
 
-            for i in range(0, snake_length-2):
+            for i in range(0, snake_length-1):
                 tail[i] = tail[i+1]
 
             tail[-1] = (player_x, player_y)
@@ -62,11 +61,14 @@ def main(window):
             sleep(0.5)
             reset()
 
-        for i in range(0, snake_length-1):
-            board.addstr(tail[i][1], tail[i][0], body, curses.color_pair(3))
-        board.addstr(player_y, player_x, player, curses.color_pair(1))
+        board.addstr(tail[0][1], tail[0][0], '  ')  # clear tail end
+        background_dots()  # redraw background
+        # print entire tail
+        for i in range(1, snake_length): board.addstr(tail[i][1], tail[i][0], body, curses.color_pair(3))
+        board.addstr(player_y, player_x, player, curses.color_pair(1))  # print player
+        # debug
         window.addstr(0, 0, f'{(player_x, player_y)},  rotation: {current_rotation}    ')
-        window.addstr(0, 0, f'tail: {tail}')
+        window.addstr(1, 0, f'tail: {tail}                            ')
 
         window.refresh()
         board.refresh()
@@ -79,11 +81,15 @@ def background_dots():
             if j % 2 != 0: board.addstr(i, j, "·", curses.color_pair(2))
 
 def reset():
-    global player_x, player_y, current_rotation, snake_length
+    global player_x, player_y, current_rotation, snake_length, tail, body
 
     player_x, player_y = board_w - 1, board_h // 2
     current_rotation = -1
-    snake_length = 1
+    # snake_length = 1
+
+    tail = [(player_x, player_y + (snake_length - i)) for i in range(1, snake_length)]
+    for i in range(0, snake_length - 1):
+        board.addstr(tail[i][1], tail[i][0], body, curses.color_pair(3))
 
     board.clear()
     board.box()
