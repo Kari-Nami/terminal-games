@@ -1,14 +1,15 @@
 import curses
-from random import randrange
+from random import choice
 from time import sleep
 
-def main(window):
+def main(stdscr):
     global board_h, board_w, board, player_x, player_y, \
-        snake_length, current_rotation, tail, body
+        snake_length, current_rotation, tail, body, \
+        valid_locations, window
 
     curses.start_color()
     curses.use_default_colors()
-    window = window
+    window = stdscr
 
     curses.init_pair(1, curses.COLOR_MAGENTA, -1)
     curses.init_pair(2, 237, -1)  # dark grey for grid
@@ -27,10 +28,11 @@ def main(window):
     directions = [(0, -1), (2, 0), (0, 1), (-2, 0)]
     current_rotation = -1
 
+    valid_locations =  [(i, j) for j in range(1, board_h-1) for i in range(1, board_w*2-1, 2)]
     apple = '██'
     apple_x, apple_y = generate_apple()
 
-    board = curses.newwin(board_h, board_w*2, 4, 0)
+    board = curses.newwin(board_h, board_w*2, 1, 0)
     curses.curs_set(0)
     board.nodelay(True)
     board.keypad(True)
@@ -68,9 +70,9 @@ def main(window):
             reset()
 
         if abs(player_x-apple_x) <= 1 and player_y == apple_y:
-            apple_x, apple_y = generate_apple()
             snake_length += 1
             tail.insert(1, tail[0])
+            apple_x, apple_y = generate_apple()
 
         if (player_x, player_y) in tail:
             board.addstr(0, 0, 'death')
@@ -87,7 +89,7 @@ def main(window):
         board.addstr(player_y, player_x, player, curses.color_pair(1))  # print player
         # debug
         window.addstr(0, 0, f'{(player_x, player_y)},  rotation: {current_rotation}, score: {snake_length-1}    ')
-        window.addstr(1, 0, f'tail: {tail}                            ')
+        # window.addstr(1, 0, f'tail: {tail}                            ')
 
         window.refresh()
         board.refresh()
@@ -114,9 +116,17 @@ def reset():
     board.box()
     background_dots()
 
-def generate_apple() -> tuple[int, int]:
-    x = randrange(1, board_w*2-3, 2)
-    y = randrange(1, board_h-2)
-    return x, y
+def generate_apple():
+    global valid_locations
+
+    valid_locations.remove((player_x, player_y))
+    if tail:
+        valid_locations.append(tail[0])
+        for location in tail[1:]:
+            if location in valid_locations: valid_locations.remove(location)
+
+    # window.addstr(1, 0, f'valid: {valid_locations}')
+
+    return choice(valid_locations)
 
 curses.wrapper(main)
